@@ -78,3 +78,91 @@ void heap_sort(int* data, int len){
         heap_build(data,1,len-1-i);
     }
 }
+
+//希尔排序
+void shell_sort(int* data, int len){
+    int step = len/2;
+    while(step >= 1){
+        for(int i = step;i < len;i++){
+            int temp = data[i];
+            int j = i;
+            while(j-step >= 0){
+                if(temp < data[j-step]){
+                    data[j] = data[j-step];
+                    j = j - step;
+                }
+                else{
+                    break;
+                }
+            }
+            data[j] = temp;
+        }
+        step = step/2;
+    }
+}
+
+//子数组归并
+void merge(int* data, int left, int mid, int right){
+    int temp[100];
+    int i = left;
+    int j = mid + 1;
+    int k = 0;
+    while(i <= mid && j <= right){
+        if(data[i] <= data[j]){
+            temp[k++] = data[i++];
+        }
+        else{
+            temp[k++] = data[j++];
+        }
+    }
+    //后半没填完
+    while(j <= right){
+        temp[k++] = data[j++];
+    }
+    //前半没填完
+    while(i <= mid){
+        temp[k++] = data[i++];
+    }
+    for(int m = 0;m < k;m++){
+        data[left] = temp[m];
+        left++;
+    }
+}
+//归并排序
+void merge_sort(int* data, int left, int right){
+    if(left < right){
+        int mid = (left + right) / 2;
+        merge_sort(data,left,mid);
+        merge_sort(data,mid+1,right);
+        merge(data,left,mid,right);
+    }
+}
+
+
+//快速排序基准数
+int shift(int* data, int low, int high){
+    int base = data[low];
+    int len = sizeof(data)/ sizeof(data[0]);
+    while(low < high){
+        while(low < high && data[high] >= base){
+            high--;
+        }
+        data[low] = data[high];
+        while(low < high && data[low] <= base){
+            low++;
+        }
+        data[high] = data[low];
+    }
+    data[low] = base;
+    int k = low;
+    return low;
+}
+//快速排序
+void shift_sort(int* data, int low, int high){
+    int base_pos;
+    if(low < high){
+        base_pos = shift(data,low,high);
+        shift_sort(data,low,base_pos);
+        shift_sort(data,base_pos+1,high);
+    }
+}
